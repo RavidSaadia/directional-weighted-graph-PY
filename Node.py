@@ -2,10 +2,11 @@ import random as rnd
 
 
 class Node:
-    _id = 0
+    static_id = 0
 
-    def __init__(self, inside: dict, outside: dict, info: str, tag: float, pos: tuple):
-        self._id += 1
+    def __init__(self, inside: dict = {}, outside: dict = {}, info: str = "", tag: float = 0, pos: tuple = ()):
+        self._id = Node.static_id
+        Node.static_id += 1
         self._inside = inside
         self._outside = outside
         self._info = info
@@ -38,3 +39,6 @@ class Node:
 
     def get_info(self):
         return self._info
+
+    def __repr__(self):
+        return str(self._outside)
