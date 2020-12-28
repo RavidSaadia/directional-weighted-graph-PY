@@ -1,4 +1,9 @@
-class DiGraph:
+import GraphInterface
 
-    def __init__(self, nodes : [] ):
-        self.nodes = nodes
+
+class DiGraph(GraphInterface):
+
+    def __init__(self, nodes: list = []):
+        self._nodes = nodes
+
+

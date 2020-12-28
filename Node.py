@@ -1,18 +1,40 @@
-class Node  :
+import random as rnd
+
+
+class Node:
     _id = 0
-    def __init__(self, inside : {}, outside : {}, info : ""):
+
+    def __init__(self, inside: dict, outside: dict, info: str, tag: float, pos: tuple):
         self._id += 1
-        self.inside = inside
-        self.outside = outside
-        self.info = info
+        self._inside = inside
+        self._outside = outside
+        self._info = info
+        self._tag = tag
+        self._pos = pos
 
-    def connect(self,  node):
-        self.outside[node.get_id()] = node
-        node.inside[self.get_id()] = self
+    def set_pos(self, pos: tuple = (rnd.random(), rnd.random(), rnd.random())):
+        self._pos = pos
 
-    def get_id(self):
+    def set_tag(self, tag: float):
+        self._tag = tag
+
+    def set_info(self, info: str):
+        self._info = info
+
+    def get_inside(self) -> dict:
+        return self._inside
+
+    def get_outside(self) -> dict:
+        return self._outside
+
+    def get_id(self) -> int:
         return self._id
 
-    def get_info(self):
-        return self.info
+    def get_tag(self) -> float:
+        return self._tag
 
+    def get_pos(self):
+        return self._pos
+
+    def get_info(self):
+        return self._info
