@@ -44,7 +44,6 @@ class GraphAlgo(GraphAlgoInterface):
         with open(file_name, 'w') as to_save:
             json.dump(d, to_save)
 
-
     def shortest_path(self, id1: int, id2: int) -> (float, list):
         pass
 
