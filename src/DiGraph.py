@@ -37,11 +37,14 @@ class DiGraph(GraphInterface):
         def del_out(self, key):
             self._outside.pop(key)
 
-        # def __repr__(self):
-        #     return str(self._outside)
+        def __eq__(self, other):
+            return self._id == other.id()
 
-    def __init__(self, nodes: dict = {}):
-        self._nodes = nodes
+        def __repr__(self):
+            return str(self._outside)
+
+    def __init__(self):
+        self._nodes = {}
         self._e_size = 0
         self._mc = 0
 
@@ -105,7 +108,17 @@ class DiGraph(GraphInterface):
         return True
 
     def get_edge(self, id1, id2) -> float:
-        return self._nodes[id1].get_outside()[id2]
+        if(id1 not in self._nodes or id2 not in self._nodes or id2 not in self.all_out_edges_of_node(id1)):
+            return -1, False
+        return self._nodes[id1].get_outside()[id2], True
+
+    def __eq__(self, other):
+        b = self._nodes == other.get_all_v()
+        for src in self._nodes.keys():
+            for dest in self.all_out_edges_of_node(src):
+                b &= other.get_edge(src, dest)[1]
+                b &= self.get_edge(src, dest) == other.get_edge(src, dest)
+        return b
 
     def __repr__(self):
         return f'|V| = {self.v_size()} |E| = {self.e_size()}'
