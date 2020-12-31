@@ -1,6 +1,8 @@
 from heapq import heappush, heappop
 from typing import List
 from pathlib import Path
+
+from src.Graphics import paint
 import src.GraphInterface as GraphInterface
 import json
 from src.DiGraph import DiGraph
@@ -48,7 +50,7 @@ class GraphAlgo(GraphAlgoInterface):
     def shortest_path(self, id1: int, id2: int) -> (float, list):
 
         nodes = self._g.get_all_v().keys()
-        paths = {}
+        paths = {id1: [id1]}
         push = heappush
         pop = heappop
         dist = {}  # dictionary of final distances
@@ -56,9 +58,8 @@ class GraphAlgo(GraphAlgoInterface):
         # q is heapq with 2-tuples (distance, node)
         q = []
         if id1 not in nodes:
-            return -1, None
+            return float('inf'), []
         seen[id1] = 0
-        # paths[id1] = [id1]
         push(q, (0, id1))
         while q:
             (d, v) = pop(q)  # d is distance, v is the new current node
@@ -75,7 +76,7 @@ class GraphAlgo(GraphAlgoInterface):
                 elif u not in seen or vu_dist < seen[u]:
                     seen[u] = vu_dist
                     push(q, (vu_dist, u))
-                    if(v not in paths):
+                    if v not in paths:
                         paths[v] = [v]
                     paths[u] = paths[v] + [u]
         return dist[id2], paths[id2]
@@ -87,7 +88,7 @@ class GraphAlgo(GraphAlgoInterface):
         pass
 
     def plot_graph(self) -> None:
-        pass
+        paint(self._g, title=str(self._g))
 
 
 if __name__ == '__main__':

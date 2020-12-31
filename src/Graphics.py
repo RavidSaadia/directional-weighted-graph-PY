@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from src.GraphAlgo import GraphAlgo as ga
 import numpy as np
 
 r = 0.0003
@@ -36,7 +35,10 @@ def paint(g, title="", show_w=False):
         Spos = Snode.pos
         ax.add_artist(plt.Circle(Spos, radius=r))
         Sid = Snode.id()
-        ax.text(Spos[0], Spos[1], Sid, color=(1, 1, 1), ha='center', va='center')
+        ax.text(Spos[0], Spos[1], Sid,
+                color=(1, 1, 1),
+                ha='center',
+                va='center')
         for key in g.all_out_edges_of_node(Sid):
             Enode = g.get_all_v()[key]
             Epos = Enode.pos
@@ -49,6 +51,8 @@ def paint(g, title="", show_w=False):
                      fc=(0.8, 0.2, 0.3, 1),
                      ec=(0.8, 0.2, 0.3, 1))
             if show_w:
-                plt.text((Spos[0] + Epos[0]) / 2, (Spos[1] + Epos[1]) / 2, str(round(g.get_edge(Sid, key)[0],2)), ha='center', va='center')
+                plt.text((Spos[0] + Epos[0]) / 2, (Spos[1] + Epos[1]) / 2, str(round(g.get_edge(Sid, key)[0],2)),
+                         ha='center',
+                         va='center')
     plt.title(title)
     plt.show()
