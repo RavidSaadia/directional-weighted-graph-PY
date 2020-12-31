@@ -30,12 +30,13 @@ def get_point(s, e):
 #     return x, y
 
 
-def paint(g, seed):
+def paint(g, title="", show_w=False):
     ax = plt.axes()
     for Snode in g.get_all_v().values():
         Spos = Snode.pos
         ax.add_artist(plt.Circle(Spos, radius=r))
         Sid = Snode.id()
+        ax.text(Spos[0], Spos[1], Sid, color=(1, 1, 1), ha='center', va='center')
         for key in g.all_out_edges_of_node(Sid):
             Enode = g.get_all_v()[key]
             Epos = Enode.pos
@@ -47,5 +48,7 @@ def paint(g, seed):
                      length_includes_head=True,
                      fc=(0.8, 0.2, 0.3, 1),
                      ec=(0.8, 0.2, 0.3, 1))
-    plt.title(f'graph seed: {seed}')
+            if show_w:
+                plt.text((Spos[0] + Epos[0]) / 2, (Spos[1] + Epos[1]) / 2, str(round(g.get_edge(Sid, key)[0],2)), ha='center', va='center')
+    plt.title(title)
     plt.show()

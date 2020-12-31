@@ -18,9 +18,9 @@ def create_graph(seed, nodes, edges):
     g0 = DiGraph()
     r = rnd(x=seed)
     for _ in range(nodes):
-        g0.add_node(get_new_key(), (rnd.random(r) / 44, rnd.random(r) / 40))
+        g0.add_node(get_new_key(), (r.random() / 70, r.random() / 70))
     while edges > 0:
-        edges -= g0.add_edge(r.choice(list(g0.get_all_v().keys())), r.choice(list(g0.get_all_v().keys())), 0)
+        edges -= g0.add_edge(r.choice(list(g0.get_all_v().keys())), r.choice(list(g0.get_all_v().keys())), r.random())
     return g0
 
 
@@ -38,7 +38,7 @@ class MyTestCase(unittest.TestCase):
         seed = rnd.randint(rnd(), 0, 100)
         print(f'showing graph with seed {seed}')
         g0 = create_graph(seed, 30, 50)
-        Graphics.paint(g0, 0)
+        Graphics.paint(g0, title=f'Graph seed: {seed}', show_w=True)
 
         self.assertEqual(True, True)
 
@@ -59,24 +59,20 @@ class MyTestCase(unittest.TestCase):
     def test_shortest_path_basic2(self):
         ga = GraphAlgo()
         g0 = DiGraph()
-        g0.add_node(0, None)
-        g0.add_node(1, None)
-        g0.add_node(2, None)
-        g0.add_node(3, None)
-        g0.add_node(4, None)
-        g0.add_node(5, None)
-        g0.add_edge(0, 1, 100)
-        g0.add_edge(0, 5, 10)
-        g0.add_edge(5, 2, 10)
-        g0.add_edge(2, 3, 10)
-        g0.add_edge(3, 4, 10)
-        g0.add_edge(4, 1, 10)
-        ga.init(g0)
-        di, path = ga.shortest_path(0, 1)
-        # Graphics.paint(g0, 5)
+        r = rnd(x=0)
+        for n_id in range(1, 5):
+            g0.add_node(n_id, (rnd.random(r)/44,rnd.random(r)/40))
 
-        self.assertEqual(di, 50)
-        self.assertEqual(path, [0, 5, 2, 3, 4, 1])
+        g0.add_edge(1, 2, 1)
+        g0.add_edge(1, 4, 1)
+        g0.add_edge(4, 3, 2)
+        g0.add_edge(2, 3, 1)
+        ga.init(g0)
+        di, path = ga.shortest_path(1, 3)
+        Graphics.paint(g0, title='test_shortest_path_basic2', show_w=True)
+
+        self.assertEqual(di, 2)
+        self.assertEqual([1,2,3], path)
 
     def test_shortest_path(self):
         ga = GraphAlgo()
