@@ -58,6 +58,4 @@ class GraphAlgo(GraphAlgoInterface):
 
 
 if __name__ == '__main__':
-    ga = GraphAlgo()
-    ga.load_from_json('data/A1')
-    print(ga.get_graph().get_all_v())
+    pass

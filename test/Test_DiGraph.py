@@ -4,13 +4,15 @@ import unittest
 from src.DiGraph import DiGraph
 
 
+key = -1
+
+
 def get_new_key():
     global key
     key += 1
     return key
 
 
-key = -1
 g = DiGraph()
 a, b, c, d = [get_new_key() for _ in range(4)]
 g.add_node(a)
