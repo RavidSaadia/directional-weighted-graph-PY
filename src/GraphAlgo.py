@@ -1,9 +1,10 @@
+from heapq import heappush, heappop
 from typing import List
 from pathlib import Path
-import GraphInterface
+import src.GraphInterface as GraphInterface
 import json
-from DiGraph import DiGraph
-from GraphAlgoInterface import GraphAlgoInterface
+from src.DiGraph import DiGraph
+from src.GraphAlgoInterface import GraphAlgoInterface
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -45,7 +46,36 @@ class GraphAlgo(GraphAlgoInterface):
             json.dump(d, to_save)
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
-        pass
+
+        nodes = self._g.get_all_v().keys()
+        res = []
+        push = heappush
+        pop = heappop
+        dist = {}  # dictionary of final distances
+        seen = {}
+        # q is heapq with 2-tuples (distance, node)
+        q = []
+        if id1 not in nodes:
+            return -1, None
+        seen[id1] = 0
+        push(q, (0, id1))
+        while q:
+            (d, v) = pop(q)  # d is distance, v is the new current node
+            if v in dist:
+                continue  # already searched this node.
+            dist[v] = d
+            res.append(v)
+            if v == id2:
+                break
+            for u, e in self._g.all_out_edges_of_node(v).items():
+                vu_dist = dist[v] + e # id1-...->v->u
+                if u in dist:
+                    if vu_dist < dist[u]:    # optional
+                        raise ValueError("Contradictory paths found:", "negative weights?")
+                elif u not in seen or vu_dist < seen[u]:
+                    seen[u] = vu_dist
+                    push(q, (vu_dist, u))
+        return dist[id2], res
 
     def connected_component(self, id1: int) -> list:
         pass

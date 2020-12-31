@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from GraphAlgo import GraphAlgo as ga
+from src.GraphAlgo import GraphAlgo as ga
 import numpy as np
 
 r = 0.0003
@@ -28,10 +28,6 @@ def get_point(s, e):
 #     x = (x1*r+x2*d)/(r+d)
 #     y = (y1*r+y2*d)/(r+d)
 #     return x, y
-
-gal = ga()
-gal.load_from_json('data/A3')
-g = gal.get_graph()
 
 
 def paint(g, seed):
