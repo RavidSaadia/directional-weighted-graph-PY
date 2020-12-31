@@ -50,7 +50,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_get_edge(self):
         g0 = copy.deepcopy(g)
-        w = g0.get_edge(0, 1)
+        w = g0.get_edge(0, 1)[0]
         e = get_new_key()
         g0.add_node(e)
         g0.add_edge(0, e, w)

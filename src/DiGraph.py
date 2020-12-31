@@ -107,8 +107,8 @@ class DiGraph(GraphInterface):
         self._mc += 1
         return True
 
-    def get_edge(self, id1, id2) -> float:
-        if(id1 not in self._nodes or id2 not in self._nodes or id2 not in self.all_out_edges_of_node(id1)):
+    def get_edge(self, id1, id2) -> (float,bool):
+        if id1 == id2 or id1 not in self._nodes or id2 not in self._nodes or id2 not in self.all_out_edges_of_node(id1):
             return -1, False
         return self._nodes[id1].get_outside()[id2], True
 
