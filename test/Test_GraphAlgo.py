@@ -3,7 +3,7 @@ import unittest
 from src.DiGraph import DiGraph
 from src.GraphAlgo import GraphAlgo
 from random import Random as rnd
-import src.Graphics as Graphics
+from Graphics import paint
 
 key = -1
 
@@ -20,8 +20,8 @@ def create_graph(seed, nodes, edges):
     for i in range(nodes):
         g0.add_node(i, (r.random() / 70, r.random() / 70))
     while edges > 0:
-        l = list(g0.get_all_v().keys())
-        s, e = map(r.choice, [l, l])
+        keys = list(g0.get_all_v().keys())
+        s, e = map(r.choice, [keys, keys])
         edges -= g0.add_edge(s, e, r.uniform(1, 2))
     return g0
 
@@ -81,7 +81,7 @@ class MyTestCase(unittest.TestCase):
         ga.init(g0)  # #        2
         di, path = ga.shortest_path(0, 2)
 
-        # Graphics.paint(g0, title='test_shortest_path_basic', show_w=True)  # it's here for debug
+        # paint(g0, title='test_shortest_path_basic', show_w=True)  # it's here for debug
 
         self.assertEqual(di, 4.2)
         self.assertEqual(path, [0, 1, 2])
@@ -100,7 +100,7 @@ class MyTestCase(unittest.TestCase):
         ga.init(g0)
         di, path = ga.shortest_path(1, 3)
 
-        # Graphics.paint(g0, title='test_shortest_path_basic2', show_w=True)  # it's here for debug
+        # paint(g0, title='test_shortest_path_basic2', show_w=True)  # it's here for debug
 
         self.assertEqual(di, 2)
         self.assertEqual([1, 2, 3], path)
@@ -113,11 +113,43 @@ class MyTestCase(unittest.TestCase):
             ga.init(g0)
             # ga.plot_graph()  # for debugging, not recommended in large loops
             start = r.randint(0, g0.v_size() - 1)
-            expected = modifySP(r, g0, start)
+            expected = modifySP(r, g0, start)  # 1 0-0.1 max 10 edges u->v is expected (u = start)
             if not expected:
                 expected = [start]
             d, SP = ga.shortest_path(start, expected[-1])
             self.assertEqual(expected, SP)
+
+    def test_DFS(self):
+        g = create_graph(0, 6, 7)
+        ga = GraphAlgo(g)
+        (pi, d, f) = ga.dfs(g.get_all_v())
+        print(d)
+        print(f)
+        ga.plot_graph()
+
+    def test_transpose(self):
+        g = create_graph(0, 6, 7)
+        ga = GraphAlgo(g)
+        ga.plot_graph()
+        g = ga.transpose()
+        paint(g, title="transposed")
+
+    def test_connected_component(self):
+        g = create_graph(2, 6, 7)
+        ga = GraphAlgo(g)
+        for i in [3, 4, 2, 5]:
+            self.assertEqual({3, 4, 2, 5}, set(ga.connected_component(i)))
+        self.assertEqual([1], ga.connected_component(1))
+        self.assertEqual([0], ga.connected_component(0))
+        self.assertEqual([], ga.connected_component(12))
+
+    def test_connected_components(self):
+        g = create_graph(2, 6, 7)
+        ga = GraphAlgo(g)
+        cons = ga.connected_components()
+        # paint(g, show_w=True)
+        to_set = {frozenset(c) for c in cons}
+        self.assertEqual({frozenset([1]), frozenset([0]), frozenset([3, 5, 4, 2])}, to_set)
 
 
 if __name__ == '__main__':
