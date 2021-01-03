@@ -21,7 +21,7 @@ class GraphAlgo(GraphAlgoInterface):
     def get_graph(self) -> GraphInterface:
         return self._g
 
-    def DFS_visit(self, u, time, pi, discovery, finishing):
+    def DFS_visit(self, u, time, pi, discovery, finishing, t):
         """
         ===dfs-visit(u)===
         1. color[u] ← GRAY (1)
@@ -34,21 +34,24 @@ class GraphAlgo(GraphAlgoInterface):
         8. color[u] ← BLACK (2)
         9. f[u] ← time ← time + 1
         """
+        edges_of_node = self._g.all_out_edges_of_node
+        if t:
+            edges_of_node = self._g.all_in_edges_of_node
         u.tag = 1
         time += 1
         discovery[u.id()] = time
-        for v in self._g.all_out_edges_of_node(u.id()):
+        for v in edges_of_node(u.id()):
             v = self._g.get_all_v()[v]
             if v.tag == 0:
                 pi[v.id()] = u.id()
-                time = self.DFS_visit(v, time, pi, discovery, finishing)
+                time = self.DFS_visit(v, time, pi, discovery, finishing, t)
 
         u.tag = 2
         time += 1
         finishing[u.id()] = time
         return time
 
-    def dfs(self, nodes):
+    def dfs(self, nodes, t=False):
         """
         1. for each vertex u ∈ V[G]
         2.  do color[u] ← white (0)
@@ -69,7 +72,7 @@ class GraphAlgo(GraphAlgoInterface):
         for u in nodes:
             u = self._g.get_all_v()[u]
             if u.tag == 0:
-                time = self.DFS_visit(u, time, pi, discovery, finishing)
+                time = self.DFS_visit(u, time, pi, discovery, finishing, t)
         return pi, discovery, finishing
 
     def transpose(self):
@@ -160,12 +163,12 @@ class GraphAlgo(GraphAlgoInterface):
         4. output the vertices in each tree of the depth-first forest
         formed in second DFS as a separate SCC
         """
-        temp = self._g
+        # temp = self._g
         pi, discovery, finishing = self.dfs(self._g.get_all_v().keys())
 
-        g0 = self.transpose()
-        self.init(g0)
-        pi2, discovery2, finishing2 = self.dfs(dict(sorted(finishing.items(), key=lambda item: item[1], reverse=True)).keys())
+        # g0 = self.transpose()
+        # self.init(g0)
+        pi2, discovery2, finishing2 = self.dfs(dict(sorted(finishing.items(), key=lambda item: item[1], reverse=True)).keys(), t=True)
         res = []
         keys = list(finishing2.keys())
         while keys:
@@ -173,12 +176,11 @@ class GraphAlgo(GraphAlgoInterface):
             con = [k]
             while pi2[k] != -1 and keys:
                 k = pi2[k]
-                if k in finishing2:
-                    keys.pop(0)
+                keys.pop(0)
                 con.append(k)
             res.append(con)
 
-        self.init(temp)
+        # self.init(temp)
         return res
 
     def plot_graph(self) -> None:

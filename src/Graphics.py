@@ -29,8 +29,11 @@ def get_point(s, e):
 #     return x, y
 
 
-def paint(g, title="", show_w=False):
+def paint(g, title="", show_w=False, t=False):
     ax = plt.axes()
+    edges_of_node = g.all_out_edges_of_node
+    if t:
+        edges_of_node = g.all_in_edges_of_node
     for Snode in g.get_all_v().values():
         Spos = Snode.pos
         ax.add_artist(plt.Circle(Spos, radius=r))
@@ -39,7 +42,7 @@ def paint(g, title="", show_w=False):
                 color=(1, 1, 1),
                 ha='center',
                 va='center')
-        for key in g.all_out_edges_of_node(Sid):
+        for key in edges_of_node(Sid):
             Enode = g.get_all_v()[key]
             Epos = Enode.pos
             pos = get_point(Spos, Epos)

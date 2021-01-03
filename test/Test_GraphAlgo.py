@@ -63,10 +63,9 @@ class MyTestCase(unittest.TestCase):
         seed = rnd.randint(rnd(), 0, 100)
         print(f'showing graph with seed {seed}')
         g0 = create_graph(seed, 30, 50)
-        # Graphics.paint(g0, title=f'Graph seed: {seed}')  #  if you want the title..
+        # paint(g0, title=f'Graph seed: {seed}')  #  if you want the title..
         ga = GraphAlgo(g0)
         ga.plot_graph()
-
         self.assertEqual(True, True)
 
     def test_shortest_path_basic(self):
@@ -74,7 +73,7 @@ class MyTestCase(unittest.TestCase):
         g0 = DiGraph()
         r = rnd(x=3)
         for n_id in range(3):
-            g0.add_node(n_id, (rnd.random(r) / 44, rnd.random(r) / 44))
+            g0.add_node(n_id, (r.random() / 44, r.random() / 44))
         g0.add_edge(0, 1, 1.2)  # 0 --1.2-- 1
         g0.add_edge(0, 2, 5)  # \->5     /
         g0.add_edge(1, 2, 3)  # \      /-->3
@@ -125,7 +124,6 @@ class MyTestCase(unittest.TestCase):
         (pi, d, f) = ga.dfs(g.get_all_v())
         print(d)
         print(f)
-        ga.plot_graph()
 
     def test_transpose(self):
         g = create_graph(0, 6, 7)
@@ -149,6 +147,7 @@ class MyTestCase(unittest.TestCase):
         cons = ga.connected_components()
         # paint(g, show_w=True)
         to_set = {frozenset(c) for c in cons}
+        print(to_set)
         self.assertEqual({frozenset([1]), frozenset([0]), frozenset([3, 5, 4, 2])}, to_set)
 
 
