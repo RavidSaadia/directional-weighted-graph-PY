@@ -1,7 +1,26 @@
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 r = 0.0003
+
+
+def set_radius(g):
+    global r
+    maxx_pos = 0
+    minx_pos = sys.float_info.max
+
+    pos_zero = (0, 0, 0)
+    for node in g.get_all_v().values():
+
+        if dist(node.pos, pos_zero) > maxx_pos:
+            maxx_pos = dist(node.pos, pos_zero)
+        if dist(node.pos, pos_zero) < minx_pos:
+            minx_pos = dist(node.pos, pos_zero)
+
+
+    r = (maxx_pos - minx_pos) * 0.0214
 
 
 def dist(pos1, pos2):
@@ -30,6 +49,7 @@ def get_point(s, e):
 
 
 def paint(g, title="", show_w=False, t=False):
+    set_radius(g)
     ax = plt.axes()
     edges_of_node = g.all_out_edges_of_node
     if t:
@@ -54,8 +74,9 @@ def paint(g, title="", show_w=False, t=False):
                      fc=(0.8, 0.2, 0.3, 1),
                      ec=(0.8, 0.2, 0.3, 1))
             if show_w:
-                plt.text((Spos[0] + Epos[0]) / 2, (Spos[1] + Epos[1]) / 2, str(round(g.get_edge(Sid, key)[0],2)),
+                plt.text((Spos[0] + Epos[0]) / 2, (Spos[1] + Epos[1]) / 2, str(round(g.get_edge(Sid, key)[0], 2)),
                          ha='center',
                          va='center')
     plt.title(title)
+    plt.title(f' r = {r}')
     plt.show()
