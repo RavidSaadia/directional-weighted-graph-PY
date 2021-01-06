@@ -1,2 +1,4 @@
 .idea/
 venv/
+/data/A10
+/data/1000000_nodes.json

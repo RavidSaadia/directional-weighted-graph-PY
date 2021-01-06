@@ -1,4 +1,6 @@
 import copy
+import time
+from functools import lru_cache
 from heapq import heappush, heappop
 from typing import List
 from pathlib import Path
@@ -21,35 +23,42 @@ class GraphAlgo(GraphAlgoInterface):
     def get_graph(self) -> GraphInterface:
         return self._g
 
-    def DFS_visit(self, u, time, pi, discovery, finishing, t):
-        """
-        ===dfs-visit(u)===
-        1. color[u] ← GRAY (1)
-        2. time ← time + 1
-        3. d[u] ← time
-        4. for each v ∈ Adj[u]
-        5.  do if color[v] = WHITE
-        6.      then π[v] ← u
-        7.      DFS-Visit(v)
-        8. color[u] ← BLACK (2)
-        9. f[u] ← time ← time + 1
-        """
+    def DFS_visit(self, root, discovery, finishing, time_local, t):
+        nodes = []  # stack
+        component = []
+        vs = self._g.get_all_v()
+
         edges_of_node = self._g.all_out_edges_of_node
         if t:
             edges_of_node = self._g.all_in_edges_of_node
-        u.tag = 1
-        time += 1
-        discovery[u.id()] = time
-        for v in edges_of_node(u.id()):
-            v = self._g.get_all_v()[v]
-            if v.tag == 0:
-                pi[v.id()] = u.id()
-                time = self.DFS_visit(v, time, pi, discovery, finishing, t)
 
-        u.tag = 2
-        time += 1
-        finishing[u.id()] = time
-        return time
+        nodes.append(root)
+
+        while len(nodes) > 0:
+            time_local += 1
+
+            u = nodes[-1]
+
+            # this is backtraced node, we can remove it from stack
+            if u.tag == 1:
+                u.tag = 2  # black
+                finishing[u.id()] = time_local
+                nodes.pop()
+                continue
+
+            # visit
+            u.tag = 1
+            discovery[u.id()] = time_local
+
+            # for SCC's
+            component.append(u.id())
+
+            for v in edges_of_node(u.id()):
+                v = vs[v]
+                if v.tag == 0:
+                    # pi[v.id()] = u.id()
+                    nodes.append(v)
+        return discovery, finishing, time_local, component
 
     def dfs(self, nodes, t=False):
         """
@@ -61,19 +70,21 @@ class GraphAlgo(GraphAlgoInterface):
         6.  do if color[u] = white
         7.      then DFS-Visit(u)
         """
+        res = []
+        # pi = {}
         discovery = {}
         finishing = {}
-        pi = {}
-        time = 0
+        time_local = 0
         for u in nodes:
             u = self._g.get_all_v()[u]
             u.tag = 0
-            pi[u.id()] = -1
+            # pi[u.id()] = -1
         for u in nodes:
             u = self._g.get_all_v()[u]
             if u.tag == 0:
-                time = self.DFS_visit(u, time, pi, discovery, finishing, t)
-        return pi, discovery, finishing
+                discovery, finishing, time_local, con = self.DFS_visit(u, discovery, finishing, time_local, t)
+                res.append(con)
+        return finishing, res
 
     def transpose(self):
         g0 = DiGraph()
@@ -144,7 +155,9 @@ class GraphAlgo(GraphAlgoInterface):
                     if v not in paths:
                         paths[v] = [v]
                     paths[u] = paths[v] + [u]
-        return dist[id2], paths[id2]
+        if id2 in dist and id2 in paths:
+            return dist[id2], paths[id2]
+        return float('inf'), []
 
     def connected_component(self, id1: int) -> list:
         c = self.connected_components()
@@ -163,24 +176,11 @@ class GraphAlgo(GraphAlgoInterface):
         4. output the vertices in each tree of the depth-first forest
         formed in second DFS as a separate SCC
         """
-        # temp = self._g
-        pi, discovery, finishing = self.dfs(self._g.get_all_v().keys())
 
-        # g0 = self.transpose()
-        # self.init(g0)
-        pi2, discovery2, finishing2 = self.dfs(dict(sorted(finishing.items(), key=lambda item: item[1], reverse=True)).keys(), t=True)
-        res = []
-        keys = list(finishing2.keys())
-        while keys:
-            k = keys.pop(0)
-            con = [k]
-            while pi2[k] != -1 and keys:
-                k = pi2[k]
-                keys.pop(0)
-                con.append(k)
-            res.append(con)
+        finishing, res = self.dfs(self._g.get_all_v().keys())
+        r = list(finishing.items())
+        finishing2, res = self.dfs([k[0] for k in sorted(r, key=lambda kv: kv[1], reverse=True)], t=True)
 
-        # self.init(temp)
         return res
 
     def plot_graph(self) -> None:

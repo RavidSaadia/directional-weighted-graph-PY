@@ -1,4 +1,5 @@
 import copy
+import time
 import unittest
 from src.DiGraph import DiGraph
 from src.GraphAlgo import GraphAlgo
@@ -18,7 +19,7 @@ def create_graph(seed, nodes, edges):
     g0 = DiGraph()
     r = rnd(x=seed)
     for i in range(nodes):
-        g0.add_node(i, (r.random() / 70, r.random() / 70))
+        g0.add_node(i, (r.random() * 100, r.random() * 100))
     while edges > 0:
         keys = list(g0.get_all_v().keys())
         s, e = map(r.choice, [keys, keys])
@@ -144,11 +145,34 @@ class MyTestCase(unittest.TestCase):
     def test_connected_components(self):
         g = create_graph(2, 6, 7)
         ga = GraphAlgo(g)
+        paint(g, show_w=True)
         cons = ga.connected_components()
-        # paint(g, show_w=True)
         to_set = {frozenset(c) for c in cons}
-        print(to_set)
         self.assertEqual({frozenset([1]), frozenset([0]), frozenset([3, 5, 4, 2])}, to_set)
+
+    def test_runtime(self):
+        ga = GraphAlgo()
+        t = time.time()
+        ga.load_from_json('data/1000000_nodes.json')
+        t = time.time()-t
+        print('loaded:', t)
+        self.assertGreater(15, t, msg='too slow')
+
+        t = time.time()
+        ga.connected_components()
+        t = time.time()-t
+        print('sccs:', t)
+        self.assertGreater(15, t, msg='too slow')
+
+        r = rnd(x=0)
+        keys = list(ga.get_graph().get_all_v().keys())
+        s, e = map(r.choice, [keys, keys])
+
+        t = time.time()
+        ga.shortest_path(s, e)
+        t = time.time()-t
+        print('sp:', t)
+        self.assertGreater(20, t, msg='too slow')
 
 
 if __name__ == '__main__':
