@@ -145,7 +145,7 @@ class MyTestCase(unittest.TestCase):
     def test_connected_components(self):
         g = create_graph(2, 6, 7)
         ga = GraphAlgo(g)
-        paint(g, show_w=True)
+        # paint(g, show_w=True)
         cons = ga.connected_components()
         to_set = {frozenset(c) for c in cons}
         self.assertEqual({frozenset([1]), frozenset([0]), frozenset([3, 5, 4, 2])}, to_set)
@@ -156,7 +156,7 @@ class MyTestCase(unittest.TestCase):
         ga.load_from_json('data/1000000_nodes.json')
         t = time.time()-t
         print('loaded:', t)
-        self.assertGreater(15, t, msg='too slow')
+        self.assertGreater(20, t, msg='too slow')
 
         t = time.time()
         ga.connected_components()

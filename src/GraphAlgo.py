@@ -1,6 +1,4 @@
 import copy
-import time
-from functools import lru_cache
 from heapq import heappush, heappop
 from typing import List
 from pathlib import Path
@@ -23,7 +21,7 @@ class GraphAlgo(GraphAlgoInterface):
     def get_graph(self) -> GraphInterface:
         return self._g
 
-    def DFS_visit(self, root, discovery, finishing, time_local, t):
+    def DFS_visit(self, root, finishing, t):
         nodes = []  # stack
         component = []
         vs = self._g.get_all_v()
@@ -35,20 +33,17 @@ class GraphAlgo(GraphAlgoInterface):
         nodes.append(root)
 
         while len(nodes) > 0:
-            time_local += 1
-
-            u = nodes[-1]
+            u = nodes[-1] # peek
 
             # this is backtraced node, we can remove it from stack
             if u.tag == 1:
                 u.tag = 2  # black
-                finishing[u.id()] = time_local
+                finishing.append(u.id())
                 nodes.pop()
                 continue
 
             # visit
             u.tag = 1
-            discovery[u.id()] = time_local
 
             # for SCC's
             component.append(u.id())
@@ -56,9 +51,8 @@ class GraphAlgo(GraphAlgoInterface):
             for v in edges_of_node(u.id()):
                 v = vs[v]
                 if v.tag == 0:
-                    # pi[v.id()] = u.id()
                     nodes.append(v)
-        return discovery, finishing, time_local, component
+        return component
 
     def dfs(self, nodes, t=False):
         """
@@ -71,19 +65,18 @@ class GraphAlgo(GraphAlgoInterface):
         7.      then DFS-Visit(u)
         """
         res = []
-        # pi = {}
-        discovery = {}
-        finishing = {}
-        time_local = 0
+        finishing = []
+        all_v = self._g.get_all_v()
         for u in nodes:
-            u = self._g.get_all_v()[u]
+            u = all_v[u]
             u.tag = 0
-            # pi[u.id()] = -1
-        for u in nodes:
-            u = self._g.get_all_v()[u]
+
+        for u in reversed(nodes):
+            u = all_v[u]
             if u.tag == 0:
-                discovery, finishing, time_local, con = self.DFS_visit(u, discovery, finishing, time_local, t)
+                con = self.DFS_visit(u, finishing, t)
                 res.append(con)
+
         return finishing, res
 
     def transpose(self):
@@ -177,9 +170,9 @@ class GraphAlgo(GraphAlgoInterface):
         formed in second DFS as a separate SCC
         """
 
-        finishing, res = self.dfs(self._g.get_all_v().keys())
-        r = list(finishing.items())
-        finishing2, res = self.dfs([k[0] for k in sorted(r, key=lambda kv: kv[1], reverse=True)], t=True)
+        finishing, res = self.dfs(self._g.get_all_v())
+
+        finishing2, res = self.dfs(finishing, t=True)
 
         return res
 
