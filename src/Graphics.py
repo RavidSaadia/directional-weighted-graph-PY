@@ -5,6 +5,9 @@ import numpy as np
 
 
 def set_radius(g):
+    """
+    computing radius size with the proportions of the graph's 'spread'
+    """
     maxx_pos = 0
     minx_pos = sys.float_info.max
 
@@ -20,11 +23,19 @@ def set_radius(g):
 
 
 def dist(pos1, pos2):
+    """
+    a simple method to compute distance in 2 dimensioned real space.
+    """
     return np.sqrt(np.power(pos1[0] - pos2[0], 2) + np.power(pos1[1] - pos2[1], 2))
 
 
 def get_point(s, e, r):
-
+    """
+    given circle s centered in (x1,y1) with radius r
+    and circle e centered in (x2,y2) with radius r,
+    compute the intersection between the line (x1,y1)->(x2,y2) and the closer side of the edge of e to s.
+    purpose: to draw the arrows correctly
+    """
     x1, y1 = s[0], s[1]
     x2, y2 = e[0], e[1]
     d = dist(s, e)
@@ -37,6 +48,9 @@ def get_point(s, e, r):
 
 
 # def eden(s,e):
+"""
+eden's version to compute the same as get_point.
+"""
 #     x1, y1 = s[0], s[1]
 #     x2, y2 = e[0], e[1]
 #     d = dist(s, e)-r
@@ -46,6 +60,13 @@ def get_point(s, e, r):
 
 
 def paint(g, title="", show_w=False, t=False):
+    """
+    plot g.
+    ===flags===
+        title: choose the title to show on the top. default is an empty string.
+        show_w: to print the edges weights. not recommended in graphs containing both uv and vu edges.
+        t: plot the transposed version of the graph
+    """
     r = set_radius(g)
     ax = plt.axes()
     edges_of_node = g.all_out_edges_of_node
