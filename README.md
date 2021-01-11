@@ -4,6 +4,11 @@ Ex3 Readme. Introduction @auther Ravid Saadia & Achiya Zigler
 
 In this project we will implement the interfaces. There are tow classes which we will use in order to implement the interfaces and another graphics class. (We will elaborate each class by it's section)
 
+an example image represented here: 
+
+![alt text](https://github.com/RavidSaadia/directional-weighted-graph-PY/blob/master/Figure_1.png)
+![alt text](https://github.com/RavidSaadia/directional-weighted-graph-PY/blob/master/Figure_2.png)
+
 functions implementations
 
 Node class function:
