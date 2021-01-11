@@ -2,8 +2,8 @@ import copy
 import time
 import networkx as nx
 import unittest
-from src.DiGraph import DiGraph
-from src.GraphAlgo import GraphAlgo
+from DiGraph import DiGraph
+from GraphAlgo import GraphAlgo
 from random import Random as rnd
 from src.Graphics import paint
 
@@ -43,20 +43,14 @@ def maincheck_our(s):
 
 def graph_to_nx(g):
     ga = nx.DiGraph()
-    # pos_n = {}
 
     for n in g.get_all_v():
         node = g.get_all_v()[n]
-        # pos_n[n] = np.array(node.pos)
         ga.add_node(n)
 
         for e in node.get_outside():
             ga.add_edge(n, e)
             ga[n][e]['weight'] = g.get_edge(n, e)[0]
-    # nx.draw_networkx_nodes(ga, pos=pos_n)
-    #  print(nx.spring_layout(ga))
-    # nx.draw_networkx_edges(ga, pos=pos_n)
-    # plt.show()
     return ga
 
 

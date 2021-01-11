@@ -20,12 +20,25 @@ class GraphAlgo(GraphAlgoInterface):
 
     def get_graph(self) -> GraphInterface:
         """
-
-        :return:
+        :return: the initialized graph
         """
         return self._g
 
     def _DFS_visit(self, root, finishing, t):
+        """
+        private method in use by dfs().
+        the pseudo code for recursive function is:
+        1. color[u] ← GRAY
+        2. time ← time + 1
+        3. d[u] ← time
+        4. for each v ∈ Adj[u]
+        5.  do if color[v] = WHITE
+        6.      then π[v] ← u
+        7.      DFS-Visit(v)
+        8. color[u] ← BLACK
+        9. f[u] ← time ← time + 1
+        the code below is the 'while-version' of the pseudo code above.
+        """
         nodes = []  # stack
         component = []
         vs = self._g.get_all_v()
@@ -60,6 +73,8 @@ class GraphAlgo(GraphAlgoInterface):
 
     def dfs(self, nodes, t=False):
         """
+        simple dfs concept, with a touch of calculating the scc's inside the algorithm to save runtime.
+        the pseudo code taken from algo1 lecture.
         1. for each vertex u ∈ V[G]
         2.  do color[u] ← white (0)
         3.  π[u] ← NULL (-1)
@@ -84,6 +99,11 @@ class GraphAlgo(GraphAlgoInterface):
         return finishing, res
 
     def transpose(self):
+        """
+        this method was written originally for SCC's,
+        but a shortcut made by swapping all_out_edges_of_node with all_in_edges_of_node when needed.
+        so the function remained for general purposes.
+        """
         g0 = DiGraph()
         for u in self._g.get_all_v().values():
             g0.add_node(u.id(), pos=copy.deepcopy(u.pos))
@@ -94,6 +114,10 @@ class GraphAlgo(GraphAlgoInterface):
         return g0
 
     def load_from_json(self, file_name: str) -> dict:
+        """
+        load  a graph from a json file.
+        the graph loaded will replace the initialized graph.
+        """
         p = str(Path(__file__).parent.parent)
         file_name = p + '/' + file_name
         with open(file_name, 'r') as fp:
@@ -106,6 +130,9 @@ class GraphAlgo(GraphAlgoInterface):
             self._g.add_edge(int(edge['src']), int(edge['dest']), float(edge['w']))
 
     def save_to_json(self, file_name: str) -> bool:
+        """
+        save the initialized graph to a file.
+        """
         d = {'Edges': [], 'Nodes': []}
         for key, node in self._g.get_all_v().items():
             d['Nodes'].append({'pos': str(node.pos)[1:-1].replace(' ', ''), 'id': key})
@@ -121,7 +148,11 @@ class GraphAlgo(GraphAlgoInterface):
             json.dump(d, to_save)
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
-
+        """
+        calculate the shortest path from id1 to id2 using dijaxtra algorithm.
+        :return: the weight of the path and a list with the path keys.
+        if the path doesn't exist, return 'inf',[].
+        """
         nodes = self._g.get_all_v().keys()
         paths = {id1: [id1]}
         push = heappush
@@ -157,6 +188,11 @@ class GraphAlgo(GraphAlgoInterface):
         return float('inf'), []
 
     def connected_component(self, id1: int) -> list:
+        """
+        return the component that contains id1
+        represented by list of the component's keys.
+        if the key isn't in the initialized graph, return [].
+        """
         c = self.connected_components()
         for res in c:
             if id1 in res:
@@ -167,11 +203,11 @@ class GraphAlgo(GraphAlgoInterface):
     def connected_components(self) -> List[list]:
         """
         1. call DFS(G) to compute finishing times f [u] for all u
-        2. compute GT
-        3. call DFS(GT), but in the main loop, consider vertices in
-        order of decreasing f [u] (as computed in first DFS)
+        2. compute G transpose (actually just swapping all_in_edges_of_node with all_out_edges_of_node)
+        3. call DFS(G transpose), but in the main loop, consider vertices in
+           order of decreasing f [u] (as computed in first DFS)
         4. output the vertices in each tree of the depth-first forest
-        formed in second DFS as a separate SCC
+           formed in second DFS as a separate SCC
         """
 
         finishing, res = self.dfs(self._g.get_all_v())
@@ -181,6 +217,9 @@ class GraphAlgo(GraphAlgoInterface):
         return res
 
     def plot_graph(self) -> None:
+        """
+        painting the graph using matplotlib (in 'Graphics.py')
+        """
         paint(self._g, title=str(self._g))
 
 
