@@ -2,8 +2,8 @@ import copy
 import time
 import networkx as nx
 import unittest
-from DiGraph import DiGraph
-from GraphAlgo import GraphAlgo
+from src.DiGraph import DiGraph
+from src.GraphAlgo import GraphAlgo
 from random import Random as rnd
 from src.Graphics import paint
 
@@ -14,6 +14,7 @@ def maincheck_our(s):
     ga = GraphAlgo()
     t = time.time()
     ga.load_from_json(s)
+
     t = time.time() - t
     print('loaded:', t)
     print()
@@ -129,7 +130,7 @@ class MyTestCase(unittest.TestCase):
     def test_graphics(self):
         seed = rnd.randint(rnd(), 0, 100)
         print(f'showing graph with seed {seed}')
-        g0 = create_graph(seed, 30, 50)
+        g0 = create_graph(seed, 15, 30)
         # paint(g0, title=f'Graph seed: {seed}')  #  if you want the title..
         ga = GraphAlgo(g0)
         ga.plot_graph()

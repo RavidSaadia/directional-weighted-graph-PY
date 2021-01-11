@@ -2,6 +2,7 @@ import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
+import random as rnd
 
 
 def set_radius(g):
@@ -13,11 +14,17 @@ def set_radius(g):
 
     pos_zero = (0, 0, 0)
     for node in g.get_all_v().values():
-
-        if dist(node.pos, pos_zero) > maxx_pos:
-            maxx_pos = dist(node.pos, pos_zero)
-        if dist(node.pos, pos_zero) < minx_pos:
-            minx_pos = dist(node.pos, pos_zero)
+        pos = node.pos
+        if pos is None:
+            pos = randPos()
+        if dist(pos, pos_zero) > maxx_pos:
+            maxx_pos = dist(pos, pos_zero)
+            if maxx_pos is None:
+                maxx_pos = randPos()
+        if dist(pos, pos_zero) < minx_pos:
+            minx_pos = dist(pos, pos_zero)
+            if minx_pos is None:
+                minx_pos = randPos()
 
     return (maxx_pos - minx_pos) * 0.0214
 
@@ -51,12 +58,18 @@ def get_point(s, e, r):
 """
 eden's version to compute the same as get_point.
 """
+
+
 #     x1, y1 = s[0], s[1]
 #     x2, y2 = e[0], e[1]
 #     d = dist(s, e)-r
 #     x = (x1*r+x2*d)/(r+d)
 #     y = (y1*r+y2*d)/(r+d)
 #     return x, y
+
+
+def randPos():
+    return rnd.uniform(0, 1), rnd.uniform(0, 1)
 
 
 def paint(g, title="", show_w=False, t=False):
@@ -73,6 +86,8 @@ def paint(g, title="", show_w=False, t=False):
     if t:
         edges_of_node = g.all_in_edges_of_node
     for Snode in g.get_all_v().values():
+        if Snode.pos is None:
+            Snode.pos = randPos()
         Spos = Snode.pos
         ax.add_artist(plt.Circle(Spos, radius=r))
         Sid = Snode.id()
@@ -82,6 +97,8 @@ def paint(g, title="", show_w=False, t=False):
                 va='center')
         for key in edges_of_node(Sid):
             Enode = g.get_all_v()[key]
+            if Enode.pos is None:
+                Enode.pos = randPos()
             Epos = Enode.pos
             pos = get_point(Spos, Epos, r)
             ax.arrow(Spos[0], Spos[1], pos[0] - Spos[0], pos[1] - Spos[1],
