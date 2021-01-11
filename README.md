@@ -63,13 +63,13 @@ In this class we will perform the following steps:
             **_DWGraph_DS classs function:_**
 
 
-         The second class is called _**"DiGraph Class"**_.
-         This class represents all Vertexes which are what make our graph.
-         This graph is called "directed weighted Graph".
-         This class creates a graph from each individual vertex (node) by implement the interface **"GraphInterface"**
-         in the code "DiGraph" to create the graph itself.
-         The Data Structures which we used are "dict" since it is very effective.
-         In this class we will perform the following steps:
+The second class is called _**"DiGraph Class"**_.
+This class represents all Vertexes which are what make our graph.
+This graph is called "directed weighted Graph".
+This class creates a graph from each individual vertex (node) by implement the interface **"GraphInterface"**
+in the code "DiGraph" to create the graph itself.
+The Data Structures which we used are "dict" since it is very effective.
+In this class we will perform the following steps:
 
 
 
@@ -155,11 +155,11 @@ In this class we will perform the following steps:
         
         **_DWGraph_Algo class function:_**
 
-        The third class is called _**"GraphAlgo Class"**_ .
-        This class executes algorithmic operations on graphs which were created by "DiGraph".
-        We implement the interface "GraphAlgoInterface" in the code "GraphAlgo" to perform algorithmic operations on different graphs.
-        In this class we will use the parameters "Tag and Info" which we have in the class "Node".
-        In this class we will perform the following steps:
+The third class is called _**"GraphAlgo Class"**_ .
+This class executes algorithmic operations on graphs which were created by "DiGraph".
+We implement the interface "GraphAlgoInterface" in the code "GraphAlgo" to perform algorithmic operations on different graphs.
+In this class we will use the parameters "Tag and Info" which we have in the class "Node".
+In this class we will perform the following steps:
             
             
             
@@ -253,10 +253,9 @@ In this class we will perform the following steps:
         """
         
         
-    The forth class is called _**"Graphics Class"**_ .
-        This class drawing graphs which were created by "DiGraph".
-       
-        In this class we will perform the following steps:
+The forth class is called _**"Graphics Class"**_ .
+This class drawing graphs which were created by "DiGraph".
+In this class we will perform the following steps:
         
      -def set_radius(g):
           """
