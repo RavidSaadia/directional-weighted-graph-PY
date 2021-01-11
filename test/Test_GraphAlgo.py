@@ -1,12 +1,84 @@
 import copy
 import time
+import networkx as nx
 import unittest
 from src.DiGraph import DiGraph
 from src.GraphAlgo import GraphAlgo
 from random import Random as rnd
-from Graphics import paint
+from src.Graphics import paint
 
 key = -1
+
+
+def maincheck_our(s):
+    ga = GraphAlgo()
+    t = time.time()
+    ga.load_from_json(s)
+    t = time.time() - t
+    print('loaded:', t)
+    print()
+
+    t = time.time()
+    ga.connected_components()
+    t = time.time() - t
+    print('sccs:', t)
+    print()
+
+    r = rnd(x=0)
+    keys = list(ga.get_graph().get_all_v().keys())
+    s, e = map(r.choice, [keys, keys])
+
+    t = time.time()
+    ga.connected_component(s)
+    t = time.time() - t
+    print('scc:', t)
+    print()
+
+    t = time.time()
+    ga.shortest_path(s, e)
+    t = time.time() - t
+    print('sp:', t)
+    print()
+
+
+def graph_to_nx(g):
+    ga = nx.DiGraph()
+    # pos_n = {}
+
+    for n in g.get_all_v():
+        node = g.get_all_v()[n]
+        # pos_n[n] = np.array(node.pos)
+        ga.add_node(n)
+
+        for e in node.get_outside():
+            ga.add_edge(n, e)
+            ga[n][e]['weight'] = g.get_edge(n, e)[0]
+    # nx.draw_networkx_nodes(ga, pos=pos_n)
+    #  print(nx.spring_layout(ga))
+    # nx.draw_networkx_edges(ga, pos=pos_n)
+    # plt.show()
+    return ga
+
+
+def maincheck_networkX(s, keys):
+    ga0 = GraphAlgo()
+    ga0.load_from_json(s)
+    ga = graph_to_nx(ga0.get_graph())
+
+    t = time.time()
+    list(nx.strongly_connected_components(ga))
+    t = time.time() - t
+    print('sccs:', t)
+    print()
+
+    s = keys.pop(0)
+    e = keys.pop(0)
+    t = time.time()
+
+    nx.dijkstra_path(ga, source=s, target=e, weight=lambda x, y, z: ga[x][y]['weight'])
+    t = time.time() - t
+    print('sp:', t)
+    print()
 
 
 def get_new_key():
@@ -122,8 +194,8 @@ class MyTestCase(unittest.TestCase):
     def test_DFS(self):
         g = create_graph(0, 6, 7)
         ga = GraphAlgo(g)
-        (pi, d, f) = ga.dfs(g.get_all_v())
-        print(d)
+        f, res = ga.dfs(g.get_all_v())
+        print(res)
         print(f)
 
     def test_transpose(self):
@@ -151,28 +223,43 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual({frozenset([1]), frozenset([0]), frozenset([3, 5, 4, 2])}, to_set)
 
     def test_runtime(self):
-        ga = GraphAlgo()
-        t = time.time()
-        ga.load_from_json('data/1000000_nodes.json')
-        t = time.time()-t
-        print('loaded:', t)
-        self.assertGreater(20, t, msg='too slow')
+        print("G_10_80_1 :")
+        maincheck_our("data/G_10_80_1.json")
 
-        t = time.time()
-        ga.connected_components()
-        t = time.time()-t
-        print('sccs:', t)
-        self.assertGreater(15, t, msg='too slow')
+        print("G_100_800_1 :")
+        maincheck_our("data/G_100_800_1.json")
 
-        r = rnd(x=0)
-        keys = list(ga.get_graph().get_all_v().keys())
-        s, e = map(r.choice, [keys, keys])
+        print("G_1000_8000_1 :")
+        maincheck_our("data/G_1000_8000_1.json")
 
-        t = time.time()
-        ga.shortest_path(s, e)
-        t = time.time()-t
-        print('sp:', t)
-        self.assertGreater(20, t, msg='too slow')
+        print("G_10000_80000_1 :")
+        maincheck_our("data/G_10000_80000_1.json")
+
+        print("G_20000_160000_1 :")
+        maincheck_our("data/G_20000_160000_1.json")
+
+        print("G_30000_240000_1 :")
+        maincheck_our("data/G_30000_240000_1.json")
+
+    def test_runtimeNX(self):
+        keys = [6, 6, 49, 97, 864, 394, 6311, 6890, 12623, 13781, 27670, 12623]
+        print("G_10_80_1 :")
+        maincheck_networkX("data/G_10_80_1.json", keys)
+
+        print("G_100_800_1 :")
+        maincheck_networkX("data/G_100_800_1.json", keys)
+
+        print("G_1000_8000_1 :")
+        maincheck_networkX("data/G_1000_8000_1.json", keys)
+
+        print("G_10000_80000_1 :")
+        maincheck_networkX("data/G_10000_80000_1.json", keys)
+
+        print("G_20000_160000_1 :")
+        maincheck_networkX("data/G_20000_160000_1.json", keys)
+
+        print("G_30000_240000_1 :")
+        maincheck_networkX("data/G_30000_240000_1.json", keys)
 
 
 if __name__ == '__main__':

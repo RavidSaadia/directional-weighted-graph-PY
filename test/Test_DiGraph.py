@@ -3,7 +3,6 @@ import unittest
 
 from src.DiGraph import DiGraph
 
-
 key = -1
 
 
@@ -47,6 +46,12 @@ class MyTestCase(unittest.TestCase):
         g0.remove_edge(0, 1)
         self.assertEqual(g0.e_size(), size - 1)
         self.assertEqual(g0.e_size(), size - 1)
+
+    def test_add_edge(self):
+        g0 = copy.deepcopy(g)
+        self.assertEqual(True, g0.add_edge(c, d, 9.9))
+        self.assertEqual(True, g0.add_edge(b, d, 10))
+        self.assertEqual(False, g0.add_edge(a, b, 10))  # exists
 
     def test_get_edge(self):
         g0 = copy.deepcopy(g)

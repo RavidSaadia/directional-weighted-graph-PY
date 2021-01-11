@@ -19,9 +19,13 @@ class GraphAlgo(GraphAlgoInterface):
         self._g = graph
 
     def get_graph(self) -> GraphInterface:
+        """
+
+        :return:
+        """
         return self._g
 
-    def DFS_visit(self, root, finishing, t):
+    def _DFS_visit(self, root, finishing, t):
         nodes = []  # stack
         component = []
         vs = self._g.get_all_v()
@@ -74,7 +78,7 @@ class GraphAlgo(GraphAlgoInterface):
         for u in reversed(nodes):
             u = all_v[u]
             if u.tag == 0:
-                con = self.DFS_visit(u, finishing, t)
+                con = self._DFS_visit(u, finishing, t)
                 res.append(con)
 
         return finishing, res
