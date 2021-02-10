@@ -1,7 +1,6 @@
 import copy
 from heapq import heappush, heappop
 from typing import List
-from pathlib import Path
 
 from src.Graphics import paint
 import src.GraphInterface as GraphInterface
@@ -118,8 +117,7 @@ class GraphAlgo(GraphAlgoInterface):
         load  a graph from a json file.
         the graph loaded will replace the initialized graph.
         """
-        p = str(Path(__file__).parent.parent)
-        file_name = p + '/' + file_name
+
         with open(file_name, 'r') as fp:
             d = json.load(fp)
         self._g = DiGraph()
@@ -140,9 +138,6 @@ class GraphAlgo(GraphAlgoInterface):
         for src in self._g.get_all_v().keys():
             for dest, w in self._g.all_out_edges_of_node(src).items():
                 d['Edges'].append({'src': src, 'w': w, 'dest': dest})
-
-        p = str(Path(__file__).parent.parent)
-        file_name = p + '/' + file_name
 
         with open(file_name, 'w') as to_save:
             json.dump(d, to_save)

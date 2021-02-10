@@ -1,5 +1,7 @@
 import copy
 import time
+from pathlib import Path
+
 import networkx as nx
 import unittest
 from src.DiGraph import DiGraph
@@ -8,7 +10,7 @@ from random import Random as rnd
 from src.Graphics import paint
 
 key = -1
-
+p = str(Path(__file__).parent.parent)
 
 def maincheck_our(s):
     ga = GraphAlgo()
@@ -120,11 +122,15 @@ def modifySP(r, g0, start):
 class MyTestCase(unittest.TestCase):
     def test_save_load(self):
         ga = GraphAlgo()
-        ga.load_from_json('data/A5')
+        file_name = 'data/A5'
+        file_name = p + '/' + file_name
+        ga.load_from_json(file_name)
 
         g0 = copy.deepcopy(ga.get_graph())
-        ga.save_to_json('data/A10')
-        ga.load_from_json('data/A10')
+        file_name = 'data/A10'
+        file_name = p + '/' + file_name
+        ga.save_to_json(file_name)
+        ga.load_from_json(file_name)
         self.assertEqual(ga.get_graph(), g0)
 
     def test_graphics(self):
@@ -218,43 +224,67 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual({frozenset([1]), frozenset([0]), frozenset([3, 5, 4, 2])}, to_set)
 
     def test_runtime(self):
+        file_name = 'data/G_10_80_1.json'
+        file_name = p + '/' + file_name
         print("G_10_80_1 :")
-        maincheck_our("data/G_10_80_1.json")
+        maincheck_our(file_name)
 
+        file_name = 'data/G_100_800_1.json'
+        file_name = p + '/' + file_name
         print("G_100_800_1 :")
-        maincheck_our("data/G_100_800_1.json")
+        maincheck_our(file_name)
 
+        file_name = 'data/G_1000_8000_1.json'
+        file_name = p + '/' + file_name
         print("G_1000_8000_1 :")
-        maincheck_our("data/G_1000_8000_1.json")
+        maincheck_our(file_name)
 
+        file_name = 'data/G_10000_80000_1.json'
+        file_name = p + '/' + file_name
         print("G_10000_80000_1 :")
-        maincheck_our("data/G_10000_80000_1.json")
+        maincheck_our(file_name)
 
+        file_name = 'data/G_20000_160000_1.json'
+        file_name = p + '/' + file_name
         print("G_20000_160000_1 :")
-        maincheck_our("data/G_20000_160000_1.json")
+        maincheck_our(file_name)
 
+        file_name = 'data/G_30000_240000_1.json'
+        file_name = p + '/' + file_name
         print("G_30000_240000_1 :")
-        maincheck_our("data/G_30000_240000_1.json")
+        maincheck_our(file_name)
 
     def test_runtimeNX(self):
         keys = [6, 6, 49, 97, 864, 394, 6311, 6890, 12623, 13781, 27670, 12623]
         print("G_10_80_1 :")
-        maincheck_networkX("data/G_10_80_1.json", keys)
+        file_name = 'data/G_10_80_1.json'
+        file_name = p + '/' + file_name
+        maincheck_networkX(file_name, keys)
 
         print("G_100_800_1 :")
-        maincheck_networkX("data/G_100_800_1.json", keys)
+        file_name = 'data/G_100_800_1.json'
+        file_name = p + '/' + file_name
+        maincheck_networkX(file_name, keys)
 
         print("G_1000_8000_1 :")
-        maincheck_networkX("data/G_1000_8000_1.json", keys)
+        file_name = 'data/G_1000_8000_1.json'
+        file_name = p + '/' + file_name
+        maincheck_networkX(file_name, keys)
 
         print("G_10000_80000_1 :")
-        maincheck_networkX("data/G_10000_80000_1.json", keys)
+        file_name = 'data/G_10000_80000_1.json'
+        file_name = p + '/' + file_name
+        maincheck_networkX(file_name, keys)
 
         print("G_20000_160000_1 :")
-        maincheck_networkX("data/G_20000_160000_1.json", keys)
+        file_name = 'data/G_20000_160000_1.json'
+        file_name = p + '/' + file_name
+        maincheck_networkX(file_name, keys)
 
         print("G_30000_240000_1 :")
-        maincheck_networkX("data/G_30000_240000_1.json", keys)
+        file_name = 'data/G_30000_240000_1.json'
+        file_name = p + '/' + file_name
+        maincheck_networkX(file_name, keys)
 
 
 if __name__ == '__main__':
