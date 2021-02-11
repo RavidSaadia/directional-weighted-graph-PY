@@ -1,7 +1,7 @@
 import copy
 from heapq import heappush, heappop
 from typing import List
-
+from random import Random as rnd
 from src.Graphics import paint
 import src.GraphInterface as GraphInterface
 import json
@@ -27,15 +27,15 @@ class GraphAlgo(GraphAlgoInterface):
         """
         private method in use by dfs().
         the pseudo code for recursive function is:
-        1. color[u] ← GRAY
-        2. time ← time + 1
-        3. d[u] ← time
-        4. for each v ∈ Adj[u]
+        1. color[u] = GRAY
+        2. time = time + 1
+        3. d[u] = time
+        4. for each v in Adj[u]
         5.  do if color[v] = WHITE
-        6.      then π[v] ← u
+        6.      then pi[v] = u
         7.      DFS-Visit(v)
-        8. color[u] ← BLACK
-        9. f[u] ← time ← time + 1
+        8. color[u] = BLACK
+        9. f[u] = time = time + 1
         the code below is the 'while-version' of the pseudo code above.
         """
         nodes = []  # stack
@@ -88,8 +88,10 @@ class GraphAlgo(GraphAlgoInterface):
         for u in nodes:
             u = all_v[u]
             u.tag = 0
-
-        for u in reversed(nodes):
+        nodes_lst = nodes
+        if not t:
+            nodes_lst = list(nodes.keys())
+        for u in reversed(nodes_lst):
             u = all_v[u]
             if u.tag == 0:
                 con = self._DFS_visit(u, finishing, t)
@@ -122,7 +124,11 @@ class GraphAlgo(GraphAlgoInterface):
             d = json.load(fp)
         self._g = DiGraph()
         for node in d['Nodes']:
-            self._g.add_node(int(node['id']), tuple(map(float, node['pos'].split(','))))
+            r = rnd()
+            pos = (r.random(), r.random(), r.random())
+            if 'pos' in node:
+                pos = tuple(map(float, node['pos'].split(',')))
+            self._g.add_node(int(node['id']), pos)
 
         for edge in d['Edges']:
             self._g.add_edge(int(edge['src']), int(edge['dest']), float(edge['w']))

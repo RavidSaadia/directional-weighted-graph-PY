@@ -125,7 +125,7 @@ class MyTestCase(unittest.TestCase):
         file_name = 'data/A5'
         file_name = p + '/' + file_name
         ga.load_from_json(file_name)
-
+        ga.plot_graph()
         g0 = copy.deepcopy(ga.get_graph())
         file_name = 'data/A10'
         file_name = p + '/' + file_name
